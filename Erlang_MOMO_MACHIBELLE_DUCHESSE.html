@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOMO MACHIBELLE DUCHESSE — Calculateur Erlang</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;600&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0d0d14;--paper:#f4f0e6;--cream:#ebe6d6;--gold:#c8a020;--gold-pale:#f0e4a8;--rust:#c94020;--teal:#1a6b6b;--teal-lt:#2a9898;--grid:rgba(13,13,20,0.06)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:36px 36px}
+header{border-bottom:3px solid var(--ink);background:var(--paper);position:sticky;top:0;z-index:50}
+.hd-bar{background:var(--ink);height:5px}
+.hd-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 44px;gap:20px;flex-wrap:wrap}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em;line-height:1;color:var(--ink)}
+.brand-name em{color:var(--rust);font-style:normal}
+.brand-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--teal);font-weight:600;margin-bottom:2px}
+.hd-center{text-align:center;flex:1}
+.hd-center h1{font-family:'DM Serif Display',serif;font-size:19px;font-style:italic;color:var(--ink)}
+.hd-center p{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin-top:3px}
+.hd-badge{background:var(--ink);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;padding:5px 14px}
+.tabs{display:flex;border-bottom:2px solid var(--ink);background:var(--cream);overflow-x:auto}
+.tab{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:12px 24px;border:none;border-right:2px solid var(--ink);background:transparent;cursor:pointer;color:var(--teal);white-space:nowrap;transition:all .15s}
+.tab:hover{background:var(--gold-pale)}.tab.on{background:var(--ink);color:var(--gold)}
+.wrap{display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 120px)}
+.sidebar{background:var(--cream);border-right:2px solid var(--ink);padding:28px 24px;display:flex;flex-direction:column;gap:20px}
+.slabel{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--rust);border-bottom:1px solid var(--rust);padding-bottom:5px;margin-bottom:2px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:11px;font-weight:600;color:var(--ink);letter-spacing:.04em}
+.fd{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--teal);margin-top:-2px}
+.fi{border:2px solid var(--ink);background:var(--paper);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--ink);padding:9px 12px;width:100%;outline:none;transition:border-color .15s,box-shadow .15s;-moz-appearance:textfield}
+.fi::-webkit-outer-spin-button,.fi::-webkit-inner-spin-button{-webkit-appearance:none}
+.fi:focus{border-color:var(--teal);box-shadow:3px 3px 0 var(--teal)}
+.fsel{border:2px solid var(--ink);background:var(--paper);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink);padding:9px 12px;width:100%;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230d0d14' stroke-width='1.8' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;transition:border-color .15s}
+.fsel:focus{border-color:var(--teal)}
+.prow{display:flex;gap:8px;align-items:center}
+.punit{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;color:var(--teal)}
+.btn-calc{background:var(--ink);color:var(--gold);border:3px solid var(--ink);font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.15em;padding:13px 18px;cursor:pointer;width:100%;position:relative;overflow:hidden;transition:color .2s}
+.btn-calc::after{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);transition:transform .22s;z-index:0}
+.btn-calc:hover::after{transform:translateX(0)}.btn-calc:hover{color:var(--ink)}.btn-calc span{position:relative;z-index:1}
+.btn-rst{background:transparent;color:var(--teal);border:2px solid var(--teal);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;padding:7px 18px;cursor:pointer;width:100%;text-transform:uppercase;transition:all .15s;font-weight:600}
+.btn-rst:hover{background:var(--teal);color:var(--paper)}
+.qref{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--teal);line-height:2}
+.content{padding:28px 36px;display:flex;flex-direction:column;gap:28px}
+.panel{display:none;flex-direction:column;gap:24px}.panel.on{display:flex}
+.rhero{border:3px solid var(--ink);background:var(--ink);color:var(--gold);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;overflow:hidden}
+.rhero::before{content:'N';font-family:'Bebas Neue',sans-serif;font-size:180px;position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:.07;line-height:1;pointer-events:none}
+.rn-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--teal-lt);margin-bottom:6px}
+.rn-val{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.9;color:var(--gold)}
+.rn-unit{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(200,160,32,.6);margin-top:5px}
+.rstats{display:flex;flex-direction:column;gap:12px;align-items:flex-end;position:relative;z-index:1}
+.rchip{text-align:right;border-right:3px solid var(--gold);padding-right:12px}
+.rchip .rc-l{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal-lt)}
+.rchip .rc-v{font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.mcards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mcard{border:2px solid var(--teal);padding:16px 18px;background:rgba(26,107,107,.04);position:relative}
+.mcard .mc-tag{position:absolute;top:-10px;left:12px;background:var(--paper);padding:0 6px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.mcard .mc-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink);line-height:2.1}
+.mcard .mc-val .v{color:var(--rust);font-weight:600}.mcard .mc-val .eq{color:var(--teal)}
+.chart-wrap{border:2px solid var(--ink);padding:18px;background:#fff}
+.chart-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:10px;font-weight:600}
+.twrap{border:2px solid var(--ink);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead tr{background:var(--ink)}
+thead th{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:11px 14px;text-align:left;color:var(--gold);border-right:1px solid #1e1e2a;font-weight:600}
+thead th:last-child{border-right:none}
+tbody tr{border-bottom:1px solid rgba(13,13,20,.1);transition:background .1s}
+tbody tr:hover{background:var(--gold-pale)}tbody tr.hl{background:rgba(200,160,32,.15)}
+tbody td{font-family:'JetBrains Mono',monospace;font-size:10px;padding:9px 14px;border-right:1px solid rgba(13,13,20,.07);color:var(--ink)}
+tbody td:last-child{border-right:none}
+.tdg{color:#1a7a3a;font-weight:700}.tdr{color:var(--rust);font-weight:700}.tdm{font-size:8px;letter-spacing:.1em;color:var(--teal);text-transform:uppercase}
+.thy h2{font-family:'DM Serif Display',serif;font-size:24px;color:var(--ink);border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:12px;font-weight:400}
+.thy p{font-size:12px;line-height:1.9;color:rgba(13,13,20,.72);margin-bottom:12px}
+.igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.icard{border:2px solid var(--ink);padding:16px;background:var(--cream)}
+.icard .in{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--teal);line-height:1}
+.icard .il{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--rust);margin-top:3px;font-weight:600}
+.icard .id{font-size:10px;color:rgba(13,13,20,.55);margin-top:5px;line-height:1.5}
+.fbox{border:2px solid var(--teal);padding:16px 20px;background:rgba(26,107,107,.04);position:relative;margin-bottom:16px}
+.fbox .ftag{position:absolute;top:-10px;left:14px;background:var(--paper);padding:0 7px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.fbox .ftxt{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);line-height:2.2}
+.fbox .ftxt .v{color:var(--rust);font-weight:600}.fbox .ftxt .eq{color:var(--teal)}
+.algos{counter-reset:step;display:flex;flex-direction:column;gap:10px}
+.astep{display:flex;gap:14px;padding:12px 16px;background:var(--cream);border-left:4px solid var(--teal)}
+.astep::before{counter-increment:step;content:counter(step,decimal-leading-zero);font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--teal);line-height:1;min-width:32px}
+.astxt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink);line-height:1.7}
+.astxt strong{color:var(--teal)}
+.empty{border:2px dashed rgba(13,13,20,.18);padding:50px 30px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.empty-ico{font-family:'Bebas Neue',sans-serif;font-size:64px;color:rgba(13,13,20,.07);line-height:1}
+.empty-ttl{font-family:'DM Serif Display',serif;font-style:italic;font-size:20px;color:rgba(13,13,20,.28)}
+.empty-dsc{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(13,13,20,.22);letter-spacing:.1em;max-width:260px;line-height:1.9}
+.notif{position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;padding:12px 18px;border:2px solid var(--gold);transform:translateY(70px);opacity:0;transition:all .28s;z-index:200}
+.notif.show{transform:translateY(0);opacity:1}.notif.err{border-color:var(--rust);color:var(--rust)}
+footer{background:var(--ink);color:var(--gold);padding:14px 44px;display:flex;align-items:center;justify-content:space-between;border-top:3px solid var(--gold)}
+.fb{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.05em}
+.fi2{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.2em;color:rgba(200,160,32,.4);text-transform:uppercase}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:2px solid var(--ink)}.igrid{grid-template-columns:1fr}.mcards{grid-template-columns:1fr}.hd-inner{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-bar"></div>
+  <div class="hd-inner">
+    <div>
+      <div class="brand-sub">Projet réalisé par</div>
+      <div class="brand-name">MOMO <em>MACHIBELLE</em> DUCHESSE</div>
+    </div>
+    <div class="hd-center">
+      <h1>Calculateur de Canaux Téléphoniques</h1>
+      <p>Dimensionnement par la Théorie du Trafic · Erlang A · B · C</p>
+    </div>
+    <div class="hd-badge">ERLANG TOOL v2.0</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab on" onclick="swTab('calcul',this)">▶ Calcul &amp; Résultats</button>
+  <button class="tab" onclick="swTab('comp',this)">⊞ Tableau Comparatif</button>
+  <button class="tab" onclick="swTab('theory',this)">∑ Théorie &amp; Algorithme</button>
+</div>
+
+<div class="wrap">
+  <aside class="sidebar">
+    <div><div class="slabel">Paramètres d'entrée</div></div>
+    <div class="fg">
+      <label class="fl">Trafic offert <em>A</em></label>
+      <span class="fd">en Erlangs (E)</span>
+      <input class="fi" type="number" id="traffic" min="0.1" step="0.1" value="10" placeholder="ex: 10">
+    </div>
+    <div class="fg">
+      <label class="fl">Probabilité de rejet (%)</label>
+      <span class="fd">saisir la valeur numérique en %</span>
+      <div class="prow">
+        <input class="fi" type="number" id="prob" min="0.01" max="99.99" step="0.01" value="2" placeholder="ex: 2" style="flex:1">
+        <span class="punit">%</span>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Modèle Erlang</label>
+      <span class="fd">formule de calcul</span>
+      <select class="fsel" id="model">
+        <option value="B">Erlang B — Perte (sans file)</option>
+        <option value="C">Erlang C — Attente (avec file)</option>
+        <option value="both">Comparer B et C</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label class="fl">Simulations Monte-Carlo</label>
+      <span class="fd">nombre d'itérations</span>
+      <input class="fi" type="number" id="sims" min="1000" max="100000" step="1000" value="10000">
+    </div>
+    <button class="btn-calc" onclick="calculate()"><span>⟶ Calculer les Canaux</span></button>
+    <button class="btn-rst" onclick="resetForm()">↺ Réinitialiser</button>
+    <div style="border-top:1px solid rgba(13,13,20,.1);padding-top:14px">
+      <div class="slabel">Aide-mémoire</div>
+      <div class="qref">A = λ × h<br>λ = taux d'appels (app/s)<br>h = durée moyenne (s)<br>N = canaux nécessaires<br>B(N,A) = prob. de rejet<br>C(N,A) = prob. d'attente</div>
+    </div>
+  </aside>
+
+  <div class="content">
+    <div class="panel on" id="panel-calcul">
+      <div id="result-area">
+        <div class="empty"><div class="empty-ico">∞</div><div class="empty-ttl">En attente de calcul</div><div class="empty-dsc">Saisissez le trafic en Erlang, la probabilité en %, choisissez le modèle puis cliquez sur Calculer.</div></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-comp">
+      <div class="slabel">Tableau comparatif — Simulation vs Table d'Erlang (5 scénarios)</div>
+      <div id="comp-area">
+        <div class="empty"><div class="empty-ico">⊞</div><div class="empty-ttl">Lancez un calcul d'abord</div><div class="empty-dsc">Le tableau comparatif apparaîtra automatiquement après le premier calcul.</div></div>
+      </div>
+    </div>
+
+    <div class="panel thy" id="panel-theory">
+      <h2>Théorie du Trafic Téléphonique</h2>
+      <p>Le trafic téléphonique est mesuré en <strong>Erlang (E)</strong> : <strong>A = λ × h</strong>, où λ est le taux d'arrivée des appels et h la durée moyenne. Agner Krarup Erlang (1878–1929) a établi les modèles mathématiques fondamentaux du dimensionnement des réseaux téléphoniques.</p>
+      <div class="igrid">
+        <div class="icard"><div class="in">A</div><div class="il">Trafic Erlang</div><div class="id">A = λ × h — Intensité du trafic offert au système de commutation.</div></div>
+        <div class="icard"><div class="in">B</div><div class="il">Erlang B (Perte)</div><div class="id">Sans file d'attente (M/M/N/N). Appels bloqués définitivement perdus.</div></div>
+        <div class="icard"><div class="in">C</div><div class="il">Erlang C (Attente)</div><div class="id">Avec file d'attente infinie (M/M/N/∞). Appels en attente d'un circuit libre.</div></div>
+      </div>
+      <div class="fbox">
+        <div class="ftag">FORMULE ERLANG B — PERTES</div>
+        <div class="ftxt"><span class="v">B(N,A)</span> <span class="eq">=</span> (A<sup>N</sup>/N!) / [Σ<sub>k=0→N</sub> A<sup>k</sup>/k!]<br>Récursif (stable) : <span class="v">B(0,A)=1</span> &nbsp;&nbsp; <span class="v">B(N,A)</span> <span class="eq">=</span> (A/N·B(N-1,A)) / (1 + A/N·B(N-1,A))</div>
+      </div>
+      <div class="fbox">
+        <div class="ftag">FORMULE ERLANG C — ATTENTE</div>
+        <div class="ftxt"><span class="v">C(N,A)</span> <span class="eq">=</span> B(N,A) / [1 − (A/N)·(1 − B(N,A))] &nbsp;&nbsp; valide pour <span class="v">N &gt; A</span></div>
+      </div>
+      <h2>Algorithme de Calcul</h2>
+      <div class="algos">
+        <div class="astep"><div class="astxt"><strong>Saisie des paramètres</strong> — Trafic A (Erlang), probabilité cible B_cible (%), modèle (B ou C), nombre de simulations N_sim.</div></div>
+        <div class="astep"><div class="astxt"><strong>Initialisation</strong> — Poser N = ceil(A). Point de départ = charge théorique maximale 100%.</div></div>
+        <div class="astep"><div class="astxt"><strong>Calcul récursif Erlang</strong> — Calculer P(N,A) par formule récursive (évite les dépassements de factorielles). Incrémenter N jusqu'à P ≤ B_cible.</div></div>
+        <div class="astep"><div class="astxt"><strong>Simulation Monte-Carlo</strong> — Générer N_sim arrivées d'appels (loi de Poisson). Affecter les circuits. Calculer P_sim = rejets / N_sim.</div></div>
+        <div class="astep"><div class="astxt"><strong>Comparaison</strong> — Calculer l'écart |ΔP| = |P_erlang − P_sim| et générer le tableau 5 scénarios.</div></div>
+        <div class="astep"><div class="astxt"><strong>Sortie</strong> — Afficher N recommandé, probabilité effective, charge réseau A/N, graphique et tableau comparatif.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fb">MOMO MACHIBELLE DUCHESSE © 2025</div>
+  <div class="fi2">Théorie du Trafic Téléphonique · Erlang A · B · C · Monte-Carlo</div>
+</footer>
+<div class="notif" id="notif"></div>
+
+<script>
+function erlangB(N,A){let B=1;for(let k=1;k<=N;k++)B=(A/k*B)/(1+A/k*B);return B}
+function erlangC(N,A){if(N<=A)return 1;const b=erlangB(N,A);return b/(1-(A/N)*(1-b))}
+function findN(A,t,m){let N=Math.max(1,Math.ceil(A));const fn=m==='C'?erlangC:erlangB;let p=fn(N,A);while(p>t&&N<600){N++;p=fn(N,A)}return{N,p}}
+function monteCarlo(A,N,ns){const lam=A;let time=0,rej=0;const ch=new Float64Array(N);for(let i=0;i<ns;i++){time+=-Math.log(1-Math.random())/lam;const dur=-Math.log(1-Math.random());let ok=false;for(let c=0;c<N;c++)if(ch[c]<=time){ch[c]=time+dur;ok=true;break}if(!ok)rej++}return rej/ns}
+
+let lastA,lastT,lastM,lastNS;
+
+function swTab(n,b){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));document.getElementById('panel-'+n).classList.add('on')}
+function notif(msg,err=false){const el=document.getElementById('notif');el.textContent=msg;el.className='notif'+(err?' err':'')+' show';setTimeout(()=>el.classList.remove('show'),3200)}
+function empty(ico,ttl,dsc){return`<div class="empty"><div class="empty-ico">${ico}</div><div class="empty-ttl">${ttl}</div><div class="empty-dsc">${dsc}</div></div>`}
+
+function resetForm(){
+  ['traffic','prob','sims'].forEach(id=>document.getElementById(id).value=id==='traffic'?'10':id==='prob'?'2':'10000');
+  document.getElementById('model').value='B';
+  document.getElementById('result-area').innerHTML=empty('∞','En attente de calcul','Saisissez les paramètres et cliquez sur Calculer.');
+  document.getElementById('comp-area').innerHTML=empty('⊞','Lancez un calcul d\'abord','Le tableau comparatif apparaîtra ici.');
+}
+
+function calculate(){
+  const A=parseFloat(document.getElementById('traffic').value);
+  const pct=parseFloat(document.getElementById('prob').value);
+  const model=document.getElementById('model').value;
+  const ns=parseInt(document.getElementById('sims').value);
+  if(!A||A<=0){notif('⚠ Trafic invalide (> 0)',true);return}
+  if(!pct||pct<=0||pct>=100){notif('⚠ Probabilité invalide (0–100%)',true);return}
+  if(!ns||ns<100){notif('⚠ Simulations insuffisantes (min 100)',true);return}
+  const t=pct/100;lastA=A;lastT=t;lastM=model;lastNS=ns;
+  let res=model==='both'?[{lbl:'Erlang B',...findN(A,t,'B')},{lbl:'Erlang C',...findN(A,t,'C')}]:[{lbl:'Erlang '+model,...findN(A,t,model)}];
+  const pr=res[0],sim=monteCarlo(A,pr.N,ns),load=(A/pr.N*100).toFixed(1);
+  renderRes(pr,sim,load,res,A,pct);
+  renderComp(A,t,model,Math.min(ns,5000));
+  notif('✓ N = '+pr.N+' canaux calculés');
+}
+
+function renderRes(pr,sim,load,res,A,pct){
+  const ep=(pr.p*100).toFixed(4),sp=(sim*100).toFixed(3),dp=(Math.abs(sim-pr.p)*100).toFixed(4);
+  const extra=res.length>1?`<div class="rchip"><div class="rc-l">Erlang C (N)</div><div class="rc-v">${res[1].N} can.</div></div>`:'';
+  document.getElementById('result-area').innerHTML=`
+<div class="rhero">
+  <div><div class="rn-label">Canaux nécessaires — ${pr.lbl}</div><div class="rn-val">${pr.N}</div><div class="rn-unit">circuits / canaux téléphoniques</div></div>
+  <div class="rstats">
+    <div class="rchip"><div class="rc-l">Trafic offert</div><div class="rc-v">${A} E</div></div>
+    <div class="rchip"><div class="rc-l">Prob. cible</div><div class="rc-v">${pct}%</div></div>
+    <div class="rchip"><div class="rc-l">P(rejet) Erlang</div><div class="rc-v">${ep}%</div></div>
+    <div class="rchip"><div class="rc-l">P(rejet) Sim.</div><div class="rc-v">${sp}%</div></div>
+    ${extra}
+    <div class="rchip"><div class="rc-l">Charge réseau</div><div class="rc-v">${load}%</div></div>
+  </div>
+</div>
+<div class="mcards" style="margin-top:4px">
+  <div class="mcard"><div class="mc-tag">ERLANG ANALYTIQUE</div><div class="mc-val"><span class="v">N</span><span class="eq"> = </span>${pr.N} canaux<br><span class="v">A</span><span class="eq"> = </span>${A} Erlang<br><span class="v">P(rejet)</span><span class="eq"> = </span>${ep}% ≤ ${pct}% ✓<br><span class="v">Charge</span><span class="eq"> = </span>${load}%</div></div>
+  <div class="mcard"><div class="mc-tag">SIMULATION MONTE-CARLO</div><div class="mc-val"><span class="v">N simulé</span><span class="eq"> = </span>${pr.N} canaux<br><span class="v">Itérations</span><span class="eq"> = </span>${lastNS.toLocaleString()}<br><span class="v">P(rejet)</span><span class="eq"> = </span>${sp}%<br><span class="v">Écart |ΔP|</span><span class="eq"> = </span>${dp}%</div></div>
+</div>
+<div class="chart-wrap"><div class="chart-title">∑ Probabilité de rejet B(N,A) en fonction du nombre de canaux N</div><canvas id="erlCvs" height="180"></canvas></div>`;
+  drawChart(A,pr.N,pr.lbl.slice(-1)==='C'?'C':'B');
+}
+
+function drawChart(A,Nopt,m){
+  const cvs=document.getElementById('erlCvs');if(!cvs)return;
+  const fn=m==='C'?erlangC:erlangB;
+  const Nmin=Math.max(1,Math.ceil(A)-2),Nmax=Nopt+10,pts=[];
+  for(let n=Nmin;n<=Nmax;n++)pts.push({n,p:fn(n,A)*100});
+  const W=cvs.width=cvs.parentElement.clientWidth-36,H=cvs.height=180;
+  const pad={t:14,r:16,b:38,l:52},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const ctx=cvs.getContext('2d');ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  const maxV=Math.max(...pts.map(d=>d.p))*1.25||10,xS=cw/(pts.length-1||1);
+  ctx.strokeStyle='rgba(13,13,20,.06)';ctx.lineWidth=1;
+  for(let i=1;i<=4;i++){const y=pad.t+ch*(1-i/4);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();ctx.fillStyle='#1a6b6b';ctx.font='8px JetBrains Mono,monospace';ctx.fillText((maxV*i/4).toFixed(2)+'%',2,y+3)}
+  ctx.strokeStyle='#0d0d14';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();
+  const ty=pad.t+ch*(1-lastT*100/maxV);ctx.strokeStyle='rgba(201,64,32,.4)';ctx.lineWidth=1;ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(pad.l,ty);ctx.lineTo(W-pad.r,ty);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(201,64,32,.7)';ctx.font='8px JetBrains Mono,monospace';ctx.fillText('cible: '+(lastT*100).toFixed(2)+'%',pad.l+4,ty-4);
+  ctx.strokeStyle='#1a6b6b';ctx.lineWidth=2;ctx.beginPath();
+  pts.forEach((d,i)=>{const x=pad.l+i*xS,y=pad.t+ch*(1-d.p/maxV);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();
+  pts.forEach((d,i)=>{const x=pad.l+i*xS,y=pad.t+ch*(1-d.p/maxV),isO=d.n===Nopt;ctx.fillStyle=isO?'#c8a020':'#1a6b6b';ctx.beginPath();ctx.arc(x,y,isO?6:3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0d0d14';ctx.font='8px JetBrains Mono,monospace';if(i%Math.max(1,Math.floor(pts.length/8))===0||isO)ctx.fillText('N='+d.n,x-12,H-pad.b+13);if(isO){ctx.strokeStyle='rgba(200,160,32,.4)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.setLineDash([])}});
+}
+
+function renderComp(A,t,model,nS){
+  const sc=[{A:Math.max(.3,A*.5),lbl:'50% du trafic nominal'},{A:Math.max(.3,A*.75),lbl:'75% du trafic nominal'},{A:A,lbl:'Trafic nominal ★'},{A:A*1.25,lbl:'125% du trafic nominal'},{A:A*1.5,lbl:'150% du trafic nominal'}];
+  const m=model==='both'?'B':model;
+  const rows=sc.map((s,i)=>{const{N,p}=findN(s.A,t,m);const ps=monteCarlo(s.A,N,nS);return{s,N,p,ps,dp:Math.abs(ps-p),ok:p<=t,nom:i===2}});
+  const tbody=rows.map(r=>`<tr class="${r.nom?'hl':''}"><td>${r.s.lbl}</td><td style="text-align:right">${r.s.A.toFixed(2)}</td><td style="text-align:right;font-weight:700">${r.N}</td><td class="${r.ok?'tdg':'tdr'}" style="text-align:right">${(r.p*100).toFixed(4)}%</td><td style="text-align:right">${(r.ps*100).toFixed(3)}%</td><td style="text-align:right">${(r.dp*100).toFixed(4)}%</td><td><span class="tdm">Erlang ${m}</span></td><td><span class="tdm">Monte-Carlo</span></td></tr>`).join('');
+  document.getElementById('comp-area').innerHTML=`<div class="twrap"><table><thead><tr><th>Scénario</th><th>Trafic A (E)</th><th>N (canaux)</th><th>P(rejet) Erlang</th><th>P(rejet) Sim.</th><th>Écart |ΔP|</th><th>Méthode 1</th><th>Méthode 2</th></tr></thead><tbody>${tbody}</tbody></table></div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--teal);margin-top:7px;line-height:2">★ Scénario nominal · Prob. cible : ${(t*100).toFixed(2)}% · Modèle : Erlang ${m} · ${nS.toLocaleString()} simulations/scénario</div>`;
+}
+
+window.addEventListener('load',()=>setTimeout(calculate,250));
+</script>
+</body>
+</html>
